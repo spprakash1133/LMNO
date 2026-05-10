@@ -1273,7 +1273,7 @@
         <div class="laptop-screen">
           <!-- PASTE VIDEO 1 EMBED SRC HERE ↓ -->
           <iframe
-            src="https://drive.google.com/file/d/15Rh7NESVaZ1n7GuC3-fVeJG7e2408YqC/preview"
+            src="https://www.youtube.com/embed/ImRnL0xKdr4"
             class="video-iframe"
             allowfullscreen
             allow="autoplay; encrypted-media"
@@ -1289,7 +1289,7 @@
             <p style="color:rgba(255,255,255,0.4); font-size:0.8rem; margin-top:0.75rem;">Video 1 — coming soon</p>
           </div>
           <div class="video-fallback-link" id="fallback1" style="display:none; position:absolute; bottom:1rem; left:0; right:0; text-align:center;">
-            <a href="https://drive.google.com/file/d/15Rh7NESVaZ1n7GuC3-fVeJG7e2408YqC/view" target="_blank" style="color:rgba(255,255,255,0.7); font-size:0.8rem; text-decoration:underline; font-family:'Syne',sans-serif;">&#9654; Open video in new tab</a>
+            <a href="https://youtu.be/ImRnL0xKdr4" target="_blank" style="color:rgba(255,255,255,0.7); font-size:0.8rem; text-decoration:underline; font-family:'Syne',sans-serif;">&#9654; Open video in new tab</a>
           </div>
         </div>
       </div>
@@ -1299,7 +1299,7 @@
         <div class="laptop-screen">
           <!-- PASTE VIDEO 2 EMBED SRC HERE ↓ -->
           <iframe
-            src="https://drive.google.com/file/d/1bUSfVjCjIv3Sjpbjpo0QNWAl5f9TKdEO/preview"
+            src="https://www.youtube.com/embed/Bi4Nvt1bJzI"
             class="video-iframe"
             allowfullscreen
             allow="autoplay; encrypted-media"
@@ -1315,7 +1315,7 @@
             <p style="color:rgba(255,255,255,0.4); font-size:0.8rem; margin-top:0.75rem;">Video 2 — coming soon</p>
           </div>
           <div class="video-fallback-link" id="fallback2" style="display:none; position:absolute; bottom:1rem; left:0; right:0; text-align:center;">
-            <a href="https://drive.google.com/file/d/1bUSfVjCjIv3Sjpbjpo0QNWAl5f9TKdEO/view" target="_blank" style="color:rgba(255,255,255,0.7); font-size:0.8rem; text-decoration:underline; font-family:'Syne',sans-serif;">&#9654; Open video in new tab</a>
+            <a href="https://youtu.be/Bi4Nvt1bJzI" target="_blank" style="color:rgba(255,255,255,0.7); font-size:0.8rem; text-decoration:underline; font-family:'Syne',sans-serif;">&#9654; Open video in new tab</a>
           </div>
         </div>
       </div>
@@ -1536,10 +1536,19 @@
       document.getElementById('waitlistEmail').focus();
       return;
     }
+    // Show success immediately (don't make user wait for network)
     document.getElementById('waitlistRow').style.display = 'none';
     document.getElementById('waitlistSuccess').classList.add('show');
-    // TODO: hook up to your email service here (Mailchimp, Loops, etc.)
-    console.log('Waitlist signup:', email);
+    // Send to Google Sheet
+    var SHEET_URL = 'https://script.google.com/macros/s/AKfycbxgQkybOIWoGGflgxer78Uufnd7_lfVHIs8pCdqYLcNVcv0t5N76SAucJqgQ8uLSW41/exec';
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'email=' + encodeURIComponent(email)
+    }).catch(function(err) {
+      console.error('Sheet sync failed:', err);
+    });
   }
 
   document.getElementById('waitlistEmail').addEventListener('keydown', function(e) {
