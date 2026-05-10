@@ -1273,10 +1273,10 @@
         <div class="laptop-screen">
           <!-- PASTE VIDEO 1 EMBED SRC HERE ↓ -->
           <iframe
-            src=""
+            src="https://drive.google.com/file/d/15Rh7NESVaZ1n7GuC3-fVeJG7e2408YqC/preview"
             class="video-iframe"
             allowfullscreen
-            allow="autoplay"
+            allow="autoplay; encrypted-media"
             title="LMNO Demo — Video 1">
           </iframe>
           <!-- Placeholder shown when src is empty -->
@@ -1288,6 +1288,9 @@
             </div>
             <p style="color:rgba(255,255,255,0.4); font-size:0.8rem; margin-top:0.75rem;">Video 1 — coming soon</p>
           </div>
+          <div class="video-fallback-link" id="fallback1" style="display:none; position:absolute; bottom:1rem; left:0; right:0; text-align:center;">
+            <a href="https://drive.google.com/file/d/15Rh7NESVaZ1n7GuC3-fVeJG7e2408YqC/view" target="_blank" style="color:rgba(255,255,255,0.7); font-size:0.8rem; text-decoration:underline; font-family:'Syne',sans-serif;">&#9654; Open video in new tab</a>
+          </div>
         </div>
       </div>
 
@@ -1296,10 +1299,10 @@
         <div class="laptop-screen">
           <!-- PASTE VIDEO 2 EMBED SRC HERE ↓ -->
           <iframe
-            src=""
+            src="https://drive.google.com/file/d/1bUSfVjCjIv3Sjpbjpo0QNWAl5f9TKdEO/preview"
             class="video-iframe"
             allowfullscreen
-            allow="autoplay"
+            allow="autoplay; encrypted-media"
             title="LMNO Demo — Video 2">
           </iframe>
           <!-- Placeholder shown when src is empty -->
@@ -1310,6 +1313,9 @@
               </svg>
             </div>
             <p style="color:rgba(255,255,255,0.4); font-size:0.8rem; margin-top:0.75rem;">Video 2 — coming soon</p>
+          </div>
+          <div class="video-fallback-link" id="fallback2" style="display:none; position:absolute; bottom:1rem; left:0; right:0; text-align:center;">
+            <a href="https://drive.google.com/file/d/1bUSfVjCjIv3Sjpbjpo0QNWAl5f9TKdEO/view" target="_blank" style="color:rgba(255,255,255,0.7); font-size:0.8rem; text-decoration:underline; font-family:'Syne',sans-serif;">&#9654; Open video in new tab</a>
           </div>
         </div>
       </div>
@@ -1541,13 +1547,27 @@
     this.style.borderColor = '';
   });
 
-  // Show iframe only when src is set; hide empty-state when real src added
+  // Handle video iframes — show fallback if Drive embed fails
   document.querySelectorAll('.video-iframe').forEach(function(iframe, i) {
-    var id = 'emptyState' + (i + 1);
-    var el = document.getElementById(id);
-    var hasSrc = iframe.getAttribute('src') && iframe.getAttribute('src').trim() !== '' && iframe.getAttribute('src') !== window.location.href;
+    var emptyId = 'emptyState' + (i + 1);
+    var fallbackId = 'fallback' + (i + 1);
+    var emptyEl = document.getElementById(emptyId);
+    var fallbackEl = document.getElementById(fallbackId);
+    var hasSrc = iframe.getAttribute('src') && iframe.getAttribute('src').trim() !== '';
+
     if (hasSrc) {
-      if (el) el.style.display = 'none';
+      // Hide placeholder, show iframe
+      if (emptyEl) emptyEl.style.display = 'none';
+      // Show fallback link after 4s if iframe hasn't loaded properly
+      var fallbackTimer = setTimeout(function() {
+        if (fallbackEl) fallbackEl.style.display = 'block';
+      }, 4000);
+      iframe.addEventListener('load', function() {
+        clearTimeout(fallbackTimer);
+        // Drive embeds always "load" — can't detect auth errors from JS
+        // Keep fallback visible as option
+        if (fallbackEl) fallbackEl.style.display = 'block';
+      });
     } else {
       iframe.style.display = 'none';
     }
